@@ -1,0 +1,142 @@
+<html>
+
+<head>
+  <title>Twint Desktop</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../css/uikit.min.css" />
+  <script src="../js/uikit.min.js"></script>
+  <script src="../js/uikit-icons.min.js"></script>
+  <link rel="stylesheet" href="../material-design-hamburger-1.0.0/dist/material-design-hamburger.css" />
+  <script src="../material-design-hamburger-1.0.0/dist/material-design-hamburger.js"></script>
+</head>
+<style>
+  h2 {
+          text-align: center;
+      }
+      #barChart {
+          width: 700px;
+          height: 100px;
+      }
+      #radarChart {
+          width: 500px;
+          height: 300px;
+      }
+      #pieChart {
+          width: 450px;
+          height: 300px;
+      }
+      #LineChart {
+          width: 700px;
+          height: 200px;
+      }
+      .container {
+          display: flex;
+      }
+      .big-container {
+          width: auto;
+          height: auto;
+      }
+      #menu {
+          border-style:solid;
+          border-width:1px;
+          border-color: #444444;
+          height: 100%;
+          width: 180px;
+      }
+      button {
+          width: 100%;
+          font-size: x-small;
+      }
+      #connector {
+          color: black;
+      }
+      #special:hover {
+          color: deepskyblue;
+          transition: 0.3s;
+      }
+      #connector:hover {
+          color: rgb(79, 243, 161);
+          transition: 0.3s;
+      }
+      #supporter:hover {
+          background-color: red;
+          color: whitesmoke;
+          transition: 1s;
+      }
+      @keyframes colorchange
+      {
+          75%   {background: rgb(89, 238, 69);}
+      }
+    </style>
+
+<body>
+  <div class="container">
+    <div class="uk-width-1-2@s uk-width-2-5@m" id="menu">
+      <ul class="uk-nav-default uk-nav-parent-icon" uk-nav>
+        <li class="uk-parent">
+          <button id="connector" type="button" class="uk-button uk-button-default uk-button-small" onclick="openConnectorForm()">
+            Connector <a uk-icon="icon: server"></a>
+          </button>
+          <button id="openCustomTemplate" type="button" class="uk-button uk-button-default uk-button-small" onclick="openCustomTemplate()">
+            Custom <a uk-icon="icon: code"></a>
+          </button>
+          <button id="buttonRun" class="uk-button uk-button-default uk-button-small" type="button">Templates <a uk-icon="icon: bolt"></a></button>
+          <div uk-dropdown="delay-hide: 5, pos: right-center">
+            <ul class="uk-nav uk-dropdown-nav">
+              <li class="uk-nav-header">Custom</li>
+              <li><a href="#" onclick="loadCustomTemplate('earthquake')">Earthquake</a></li>
+              <li class="uk-nav-divider"></li>
+              <li class="uk-nav-header">User defined</li>
+              <li><a href="#">Spam</a></li>
+              <li><a href="#">Malware</a></li>
+              <li><a href="#">Crime</a></li>
+            </ul>
+          </div>
+          </button>
+          <button id="special" type="button" class="uk-button uk-button-default uk-button-small" onclick="openGraph()">
+            Graph <a uk-icon="icon: social"></a>
+          </button>
+          <button id="special" type="button" class="uk-button uk-button-default uk-button-small" onclick="openMap()">
+            Maps <a uk-icon="icon: world"></a>
+          </button>
+          <button id="special" type="button" class="uk-button uk-button-default uk-button-small" onclick="openWordCloud()">
+            Word cloud <a uk-icon="icon: image"></a>
+          </button>
+          <button type="button" class="uk-button uk-button-default uk-button-small">
+            Settings <a uk-icon="icon: cog"></a>
+          </button>
+          <button id="supporter" type="button" class="uk-button uk-button-default uk-button-small">
+            Support <a uk-icon="icon: mail"></a>
+          </button>
+        </li>
+      </ul>
+    </div>
+    <div class="big-container">
+      <br>
+      <div class="container">
+        <div id=barChart>
+          <canvas id="myBarChart"></canvas>
+        </div>
+        <div id=radarChart>
+          <canvas id="myRadarChart"></canvas>
+        </div>
+      </div>
+      <br>
+      <br>
+      <div class="container">
+        <div id=LineChart>
+          <canvas id="myLineChart"></canvas>
+        </div>
+        <div id=pieChart>
+          <br>
+          <canvas id="myPieChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<script>var exports = {};</script>
+<script src="../js/full.js"></script>
+
+</html>

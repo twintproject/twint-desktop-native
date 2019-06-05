@@ -1,0 +1,136 @@
+<html>
+  <head>
+    <title>Twint Desktop</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/uikit.min.css" />
+    <link rel="stylesheet" href="../css/all.css" />
+    <script src="../js/uikit.min.js"></script>
+    <script src="../js/uikit-icons.min.js"></script>
+  </head>
+  <style>
+    h2 {
+      text-align: center;
+    }
+    #barChart {
+      width: 700px;
+      height: 100px;
+    }
+    #radarChart {
+      box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, .5);
+      padding-top: 20px;
+      width: 450px;
+      height: 300px;
+    }
+    #pieChart {
+      box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, .5);
+      width: 450px;
+      height: 300px;
+    }
+    #LineChart {
+      width: 700px;
+      height: 200px;
+    }
+    .container {
+      display: flex;
+    }
+    .big-container {
+      width: auto;
+      height: auto;
+      padding-left: 10px;
+    }
+    #menu {
+      border-style:solid;
+      border-width:1px;
+      border-color: #444444;
+      height: 100%;
+      width: 180px;
+    }
+    #special:hover {
+      color: deepskyblue;
+      transition: 0.3s;
+    }
+    #connector:hover {
+      color: rgb(79, 243, 161);
+      transition: 0.3s;
+    }
+    #supporter:hover {
+      color: red;
+      transition: 0.3s;
+    }
+    #cTemplate:hover {
+      color: orange;
+      transition: 0.3s;
+    }
+    @keyframes colorchange
+    {
+      75%  {background: rgb(89, 238, 69);}
+    }
+    .icon-bar {
+      width: 50px;
+      background-color: #555;
+      height: 100%;
+    }
+    .icon-bar a {
+      display: block;
+      text-align: center;
+      padding: 14px;
+      transition: all 0.3s ease;
+      color: white;
+      font-size: 20px;
+    }
+    .icon-bar a:hover {
+      background-color: #000;
+    }
+    .active {
+      background-color: #0074D9;
+    }
+    .not-active {
+      pointer-events: none;
+      cursor: default;
+      text-decoration: none;
+      background-color: #0074D9;
+    }
+  </style>
+  <body>
+    <div class="container" >
+      <section>
+        <div class="icon-bar">
+          <a class="not-active"><i class="fas fa-tachometer-alt"></i></a>
+          <a href="#" onclick="openConnectorForm()"><i id="connector" class="fas fa-database"></i></a>
+          <a href="#" onclick="openCustomTemplate()"><i id="cTemplate" class="fas fa-code"></i></a>
+          <a href="#" onclick="openGraph()"><i id="special" class="fas fa-sitemap"></i></a>
+          <a href="#" onclick="openMap()"><i id="special" class="fas fa-map-marked-alt"></i></a>
+          <a href="#" onclick="openWordCloud()"><i id="special" class="fas fa-edit"></i></a>
+          <a href="#"><i id="supporter" class="fas fa-cog"></i></a>
+          <a href="#"><i class="fas fa-envelope"></i></a>
+        </div>
+      </section>
+    <div class="big-container">
+      <br>
+      <div class="container">
+        <div id=barChart>
+          <canvas id="myBarChart"></canvas>
+        </div>
+        <div id=radarChart>
+          <canvas id="myRadarChart"></canvas>
+        </div>
+      </div>
+      <br>
+      <br>
+      <div class="container">
+        <div id=LineChart>
+          <canvas id="myLineChart"></canvas>
+        </div>
+        <div id=pieChart>
+          <br>
+          <canvas id="myPieChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<script>var exports = {};</script>
+<script src="../js/full.js"></script>
+
+</html>

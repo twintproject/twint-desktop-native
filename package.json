@@ -1,0 +1,47 @@
+{
+  "name": "twint-desktop",
+  "version": "1.0.0",
+  "description": "twint desktop app",
+  "main": "./app.js",
+  "homepage": "https://twint.io",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-packager . --all twint-desktop --dir --ignore-modules=node_modules/electron-*",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
+  },
+  "author": "Twint Project <francescopoldi@pielco11.ovh>",
+  "license": "MIT",
+  "dependencies": {
+    "chart.js": "^2.7.2",
+    "elasticsearch": "^15.1.1",
+    "elasticsearch-scroll-stream": "^1.1.3",
+    "heap": "^0.2.6",
+    "node-notifier": "^5.2.1",
+    "wordcloud": "^1.1.0"
+  },
+  "devDependencies": {
+    "electron": "^3.1.4",
+    "electron-builder": "^20.36.2",
+    "electron-builder-squirrel-windows": "^20.28.3",
+    "electron-packager": "^12.2.0",
+    "electron-rebuild": "^1.8.2"
+  },
+  "build": {
+    "appId": "io.twint",
+    "productName": "Twint",
+    "compression": "normal",
+    "artifactName": "${name}-${os}-v${version}-${arch}.${ext}",
+    "directories": {
+      "output": "./build"
+    },
+    "linux": {
+      "category": "Graphics",
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "executableName": "twint-desktop"
+    }
+  }
+}

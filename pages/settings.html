@@ -1,0 +1,52 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/uikit.min.css" />
+    <script src="../js/uikit.min.js"></script>
+    <script src="../js/uikit-icons.min.js"></script>
+  </head>
+  <style>
+    body {
+      text-align: center;
+      margin-left: auto;
+      margin-top: auto;
+      margin-bottom: auto;
+      margin-right: auto;
+      padding-top: 20px;
+    }
+    #applier {
+      border-width: 1px;
+      border-style: solid;
+      border-color: #444444;
+    }
+    #applier:hover {
+      color: deepskyblue;
+      transition: 0.3s;
+    }
+  </style>
+  <body>
+    <h2>
+      Settings
+    </h2>
+    <div class="uk-margin" uk-margin>
+      <input class="uk-input uk-form-width-medium" type="text" id="maxHashtags" placeholder="Max Hashtags">
+      <input class="uk-input uk-form-width-medium" type="text" id="maxUsers" placeholder="Max Users">
+      <input class="uk-input uk-form-width-medium" type="text" id="frameLess" placeholder="Frame less">
+      <br>
+      <button id="applier" type="button" class="uk-button uk-button-default" id="applier">Apply</input>
+    </div>
+  </body>
+  <script>
+    const {ipcRenderer} = require('electron');
+    const applier = document.getElementById('applier');
+    applier.addEventListener('click', () => {
+      var creds = {};
+      settings['maxHashtags'] = document.getElementById('maxHashtags').value;
+      settings['maxUsers'] = document.getElementById('maxUsers').value;
+      settings['frameLess'] = document.getElementById('frameLess').value;
+      console.log(settings)
+      ipcRenderer.send('post-settings', settings)
+    });
+  </script>
+</html>

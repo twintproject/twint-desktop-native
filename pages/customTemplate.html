@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/uikit.min.css" />
+    <script src="../js/uikit.min.js"></script>
+    <script src="../js/uikit-icons.min.js"></script>
+  </head>
+  <style>
+    body {
+      text-align: center;
+      margin-left: auto;
+      margin-top: auto;
+      margin-bottom: auto;
+      margin-right: auto;
+      padding-top: 20px;
+    }
+    #connector {
+      border-width: 1px;
+      border-style: solid;
+      border-color: #444444;
+    }
+    #connector:hover {
+      color: deepskyblue;
+      transition: 0.3s;
+    }
+  </style>
+  <body>
+    <h2>
+      Template Form
+    </h2>
+    <div class="uk-margin" uk-margin>
+      <input class="uk-input uk-form-width-large" type="text" id="accounts" placeholder="Username">
+      <input class="uk-input uk-form-width-large" type="text" id="hashtags" placeholder="Hashtag">
+      <input class="uk-input uk-form-width-large" type="text" id="searchTerms" placeholder="Search Terms">
+      <br>
+      <button id="connector" type="button" class="uk-button uk-button-default">Search <a uk-icon="icon: search"></a>
+    </div>
+  </body>
+  <script>
+    const {ipcRenderer} = require('electron');
+    const connector = document.getElementById('connector');
+    connector.addEventListener('click', () => {
+      var template = {};
+      if (document.getElementById('accounts').value) {
+        template['username'] = document.getElementById('accounts').value;
+      }
+      if (document.getElementById('hashtags').value) {
+        template['hashtags'] = document.getElementById('hashtags').value;
+      }
+      if (document.getElementById('searchTerms').value) {
+        template['tweet'] = document.getElementById('searchTerms').value;
+      }
+      ipcRenderer.send('post-template', template)
+    });
+  </script>
+</html>

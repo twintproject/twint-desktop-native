@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <title>Word Cloud</title>
+    <meta charset="utf-8">
+  </head>
+  <style>
+  * { margin:0; padding:0; }
+  #wordCloud { display:block; }
+  </style>
+  <body>
+    <canvas id="wordCloud"></canvas>
+  </body>
+  <script>
+    const {ipcMain, BrowserWindow} = require('electron').remote;
+    const {ipcRenderer} = require('electron');
+    var tweets = [];
+    var wordsDict = {};
+    var list = [];
+    var wordCloud = require('wordcloud');
+    ipcRenderer.send('ask-wordCloud', true);
+    ipcRenderer.on('return-cloud-data', (event, data) => {
+      tweets.push(data);
+    });
+    ipcRenderer.on('finished-cloud-data', (event) => {
+      computeWords(tweets);
+    });
+    function computeWords(tweets) {
+      for (let i = 0; i < tweets.length; i++) {
+        var _words = tweets[i];
+        for (let a = 0; a < _words.length; a++) {
+          var words = _words[a];
+          var wordInWords = words.split(" ");
+          for (let u = 0; u < wordInWords.length; u++) {
+            if (!wordsDict[wordInWords[u]]) {
+              wordsDict[wordInWords[u]] = 1;
+            } else {
+              wordsDict[wordInWords[u]]++
+            }
+          }
+        }
+      }
+      for (var key in wordsDict) {
+        list.push([key, wordsDict[key]]);
+      }
+      wordCloud(document.getElementById('wordCloud'),  {
+        list: list,
+        fontFamily: 'Times, serif',
+      });
+    }
+  (function() {
+    var canvas = document.getElementById('wordCloud'),
+            context = canvas.getContext('2d');
+    window.addEventListener('resize', resizeCanvas, false);
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      drawStuff();
+    }
+    resizeCanvas();
+    function drawStuff() {
+      wordCloud(document.getElementById('wordCloud'),  {
+        list: list,
+        fontFamily: 'Times, serif',
+      });
+    }
+    })();
+  </script>
+</html>

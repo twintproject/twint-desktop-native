@@ -1,0 +1,112 @@
+<head>
+  <title>Graph Explorer</title>
+  <script src="../js/3d-force-graph.min.js"></script>
+  <style>
+    body{
+      margin:0;
+    }
+  </style>
+  </head>
+  <body >
+    <div id="graph"></div>
+  </body>
+  <script>
+    const {
+      ipcMain,
+      BrowserWindow
+    } = require('electron').remote;
+    const {
+      ipcRenderer
+    } = require('electron');
+    let highlightNodes = [];
+    let highlightLink = null;
+    const elem = document.getElementById('graph');
+    let nodex = {};
+    let linkx = {};
+    let nodes = [];
+    let links = [];
+    let _runOnce = false;
+    function generateRandomColor() {
+      let rc = [Math.floor(Math.random() * 255).toString(),
+                Math.floor(Math.random() * 255).toString(),
+                Math.floor(Math.random() * 255).toString()]
+      return "rgba("+rc[0]+","+rc[1]+","+rc[2]+",0.6)"
+    }
+    function updateGeometries() {
+      Graph.nodeRelSize(4);
+    };
+    function init() {
+      ipcRenderer.send('ask-data-to-graph', "True");
+      if (!_runOnce) {
+        ipcRenderer.send('ask-data-to-graph', "True")
+      }
+      _runOnce = true;
+    }
+    function loadNode(id, type) {
+      if (!nodex[id]) {
+        nodex[id] = {stat: true}
+        nodes.push({id: id, type: type});
+      };
+    };
+    function loadLink(from, to) {
+      if (!linkx[from + "_" + to]) {
+        linkx[from + "_" + to] = true;
+        links.push({source: from, target: to});
+      };
+    };
+    ipcRenderer.on('return-data-to-graph', (event, data) => {
+      var userHashtag = data;
+      for (let u = 0; u < userHashtag.length; u++) {
+        var username = userHashtag[u]["username"];
+        loadNode(username, "user");
+        for (let i = 0; i < userHashtag[u]["hashtags"].length; i++) {
+          loadNode(userHashtag[u]["hashtags"][i], "hashtag");
+          loadLink(username, userHashtag[u]["hashtags"][i]);
+        }
+      }
+      renderGraph();
+    });
+    ipcRenderer.send('ask-data-to-graph', "True")
+    function renderGraph() {
+      Graph = ForceGraph3D({controlType: 'orbit'})(elem)
+       .graphData({nodes: nodes, links: links})
+       .nodeAutoColorBy('id')
+       .linkDirectionalParticles(2)
+       .nodeLabel(node => `${node.id}`)
+       .enableNodeDrag(true)
+       .nodeOpacity(0.75)
+       .enableNavigationControls(true)
+       .linkWidth(link => link === highlightLink ? 4 : 1)
+       .linkDirectionalParticles(link => link === highlightLink ? 4 : 0)
+       .linkDirectionalParticleWidth(4)
+       .onNodeClick(node => {
+         const distRatio = 1 + 300/Math.hypot(node.x, node.y, node.z);
+         Graph.cameraPosition(
+           { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
+           node,
+           3000
+         );
+         if (node.val !== 20) {
+           console.log(node);
+           nodex[node] = node.val;
+           node.val = 20
+         } else {
+           node.val = nodex[node];
+           delete nodex[node];
+         }
+         updateGeometries();
+       })
+       .onNodeHover(node => {
+         if ((!node && !highlightNodes.length) || (highlightNodes.length === 1 && highlightNodes[0] === node)) return;
+         highlightNodes = node ? [node] : [];
+         updateGeometries();
+       })
+       .onLinkHover(link => {
+         if (highlightLink === link) return;
+         highlightLink = link;
+         highlightNodes = link ? [link.source, link.target] : [];
+         updateGeometries();
+       });
+    }
+  </script>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/uikit.min.css" />
+    <script src="../js/uikit.min.js"></script>
+    <script src="OpenLayers.js"></script>
+    <title>Maps Explorer</title>
+  </head>
+  <style type="text/css">
+    html, body, #Map {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+  </style>
+  <body>
+    <div id="Map"></div>
+    <script>
+      const {ipcMain, BrowserWindow} = require('electron').remote;
+      const path = require('path');
+      const {ipcRenderer} = require('electron');
+      var points = [];
+      var fromProjection = new OpenLayers.Projection("EPSG:4326");
+      var toProjection = new OpenLayers.Projection("EPSG:900913");
+      var zoom = 14;
+      var vectorLayer = new OpenLayers.Layer.Vector("Overlay");
+      var center;
+      var _ready_points = {};
+      ipcRenderer.send('ask-map-data', true);
+      ipcRenderer.on('return-map-data', (event, data) => {
+        points.push(data);
+      })
+      ipcRenderer.on('finished-map-data', (event, data) => {
+        mapPoints(points);
+      })
+      function mapPoints(points) {
+        var map = new OpenLayers.Map("Map");
+        map.addLayer(new OpenLayers.Layer.OSM())
+        for (let i = 0; i < points.length; i++) {
+          try {
+            var user = points[i]["user"];
+            var marks = points[i]["geo_points"];
+            for (let u = 0; u < marks.length; u++) {
+              var lat = marks[u]["lat"];
+              var lon = marks[u]["lon"];
+              if (_ready_points[marks[u]]) {
+                _ready_points[marks[u]] += "\n" + user
+              } else {
+                _ready_points[marks[u]] = user
+              }
+              var lonLat = new OpenLayers.LonLat(lon, lat).transform(fromProjection, toProjection);
+              center = lonLat;
+              map.setCenter(center, zoom);
+              var feature = new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(lon, lat).transform(fromProjection, toProjection),
+                {description: _ready_points[marks[u]]} ,
+                {externalGraphic: 'images/twitter-square.png', graphicHeight: 25, graphicWidth: 21, graphicXOffset:-12, graphicYOffset:-25  }
+              );
+              vectorLayer.addFeatures(feature);
+            }
+          } catch(err) {;}
+        }
+        map.addLayer(vectorLayer);
+        var controls = {
+          selector: new OpenLayers.Control.SelectFeature(vectorLayer, { onSelect: createPopup, onUnselect: destroyPopup })
+        };
+        function destroyPopup(feature) {
+          feature.popup.destroy();
+          feature.popup = null;
+        }
+        function createPopup(feature) {
+          feature.popup = new OpenLayers.Popup.FramedCloud("pop",
+            feature.geometry.getBounds().getCenterLonLat(),
+            null,
+            '<div class="markerContent">'+feature.attributes.description+'</div>',
+            null,
+            true,
+            function() { controls['selector'].unselectAll(); }
+          );
+          feature.popup.autoSize = true;
+          feature.popup.maxSize = new OpenLayers.Size(200,400);
+          map.addPopup(feature.popup);
+        }
+        map.addControl(controls['selector']);
+        controls['selector'].activate();
+      }
+    </script>
+  </body>
+</html>
